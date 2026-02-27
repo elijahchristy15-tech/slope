@@ -5,78 +5,87 @@
 <title>Slope Leaderboard</title>
 
 <style>
-body {
-    margin: 0;
-    font-family: Arial, sans-serif;
-    background: radial-gradient(circle at center, #000 0%, #050505 60%, #000 100%);
-    color: #00ff88;
-    text-align: center;
+body{
+    margin:0;
+    font-family:Arial;
+    background:black;
+    color:#00ff88;
+    text-align:center;
 }
 
-/* glowing title */
-h1 {
-    margin-top: 30px;
-    font-size: 3em;
-    text-shadow:
-        0 0 10px #00ff88,
-        0 0 20px #00ff88,
-        0 0 40px #00ff88;
-}
-
-/* slope grid background */
-body::before {
-    content: "";
-    position: fixed;
-    width: 100%;
-    height: 100%;
+/* slope grid */
+body::before{
+    content:"";
+    position:fixed;
+    width:100%;
+    height:100%;
     background-image:
-        linear-gradient(#00ff8833 1px, transparent 1px),
-        linear-gradient(90deg, #00ff8833 1px, transparent 1px);
-    background-size: 40px 40px;
-    transform: perspective(400px) rotateX(60deg);
-    top: 40%;
-    z-index: -1;
+        linear-gradient(#00ff8833 1px,transparent 1px),
+        linear-gradient(90deg,#00ff8833 1px,transparent 1px);
+    background-size:40px 40px;
+    transform:perspective(400px) rotateX(60deg);
+    top:40%;
+    z-index:-1;
 }
 
-/* leaderboard box */
-table {
-    margin: 40px auto;
-    width: 60%;
-    border-collapse: collapse;
-    background: rgba(0,0,0,0.7);
-    box-shadow: 0 0 20px #00ff88;
+h1{
+    text-shadow:0 0 15px #00ff88;
 }
 
-th, td {
-    padding: 14px;
-    border-bottom: 1px solid #00ff8855;
+/* TOP PROGRESS BAR */
+.goal-box{
+    width:70%;
+    margin:25px auto;
 }
 
-th {
-    background: #001a11;
+.progress-container{
+    width:100%;
+    background:#001a11;
+    border-radius:15px;
+    overflow:hidden;
+    box-shadow:0 0 15px #00ff88;
 }
 
-/* glowing hover */
-tr:hover {
-    background: #003322;
-    transform: scale(1.02);
+.progress-bar{
+    height:28px;
+    background:#00ff88;
+    box-shadow:0 0 20px #00ff88;
+    transition:width 0.7s ease;
 }
 
-/* medals */
-tr:nth-child(1) {
-    color: #00ff88;
-    font-weight: bold;
-    text-shadow: 0 0 10px #00ff88;
+/* leaderboard */
+table{
+    margin:auto;
+    width:70%;
+    border-collapse:collapse;
+    background:rgba(0,0,0,0.7);
 }
 
-tr:nth-child(2) { color: #66ffaa; }
-tr:nth-child(3) { color: #99ffcc; }
+th,td{
+    padding:12px;
+    border-bottom:1px solid #00ff8855;
+}
+
+tr:nth-child(1){
+    font-weight:bold;
+    text-shadow:0 0 10px #00ff88;
+}
 </style>
 </head>
 
 <body>
 
-<h1>⚡ SLOPE LEADERBOARD ⚡</h1>
+<h1>⚡ SLOPE GOAL: 100 ⚡</h1>
+
+<div class="goal-box">
+    <h2 id="leaderName"></h2>
+
+    <div class="progress-container">
+        <div class="progress-bar" id="goalBar"></div>
+    </div>
+
+    <p id="percentText"></p>
+</div>
 
 <table>
 <thead>
@@ -91,19 +100,38 @@ tr:nth-child(3) { color: #99ffcc; }
 
 <script>
 /*
-=========================
+========================
 ONLY EDIT THIS SECTION
-=========================
+========================
 */
+
+const GOAL = 100;
+
 const players = [
     { name: "Eli", score: 77 },
-    { name: "Emma", score: 61 },
+    { name: "Emma", score: 61 }
 ];
 
-/* auto sort */
+/* sort leaderboard */
 players.sort((a,b)=>b.score-a.score);
 
-const board = document.getElementById("leaderboard");
+/* TOP PLAYER */
+const leader = players[0];
+const percent = Math.min((leader.score/GOAL)*100,100);
+
+/* update progress bar */
+document.getElementById("leaderName")
+.textContent = leader.name + " is leading";
+
+document.getElementById("goalBar")
+.style.width = percent + "%";
+
+document.getElementById("percentText")
+.textContent = leader.score + " / " + GOAL +
+" (" + Math.floor(percent) + "%)";
+
+/* build leaderboard */
+const board=document.getElementById("leaderboard");
 
 players.forEach((p,i)=>{
     const row=document.createElement("tr");
